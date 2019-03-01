@@ -75,4 +75,9 @@
 
         </LinearLayout>
     </ScrollView>
+    <TextView
+            android:text="  Start app without login..."
+            android:layout_width="match_parent"
+            android:layout_height="29dp" android:id="@+id/textView5"
+            android:textColor="@color/design_default_color_primary_dark"/>
 </LinearLayout>
