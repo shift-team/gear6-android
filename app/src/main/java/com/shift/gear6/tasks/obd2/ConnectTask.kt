@@ -1,6 +1,12 @@
 package com.shift.gear6.tasks.obd2
 
 import android.os.AsyncTask
+import br.ufrn.imd.obd.commands.ObdCommandGroup
+import br.ufrn.imd.obd.commands.protocol.EchoOffCommand
+import br.ufrn.imd.obd.commands.protocol.LineFeedOffCommand
+import br.ufrn.imd.obd.commands.protocol.SelectProtocolCommand
+import br.ufrn.imd.obd.commands.protocol.TimeoutCommand
+import br.ufrn.imd.obd.enums.ObdProtocols
 import com.shift.gear6.OnTaskCompleted
 import com.shift.gear6.adapters.*
 
@@ -16,12 +22,18 @@ class ConnectTask : AsyncTask<ConnectTask.Params, Void, IAdapter?>() {
 
         val wifiAdapter = getWifiAdapter()
         if (wifiAdapter != null) {
-            return wifiAdapter
+            return if (prepareAdapter(wifiAdapter))
+                wifiAdapter
+            else
+                null
         }
 
         val blueToothAdapter = getBlueToothAdapter()
         if (blueToothAdapter != null) {
-            return blueToothAdapter
+            return if (prepareAdapter(blueToothAdapter))
+                blueToothAdapter
+            else
+                null
         }
 
         return null
@@ -48,6 +60,25 @@ class ConnectTask : AsyncTask<ConnectTask.Params, Void, IAdapter?>() {
             null
         } catch (ex: NotImplementedError) {
             null
+        }
+    }
+
+
+    private fun prepareAdapter(adapter: IAdapter): Boolean {
+        return try {
+            val commands = ObdCommandGroup()
+
+            commands.add(br.ufrn.imd.obd.commands.protocol.ObdResetCommand())
+            commands.add(EchoOffCommand())
+            commands.add(LineFeedOffCommand())
+            commands.add(TimeoutCommand(500))
+            commands.add(SelectProtocolCommand(ObdProtocols.AUTO))
+
+            commands.run(adapter.getInputStream(), adapter.getOutputStream())
+
+            true
+        } catch (ex: Exception) {
+            false
         }
     }
 }
