@@ -1,5 +1,6 @@
 package com.shift.gear6
 
+import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.design.widget.NavigationView
@@ -8,10 +9,17 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import com.shift.gear6.adapters.IAdapter
+import com.shift.gear6.tasks.obd2.ConnectTask
+import com.shift.gear6.tasks.obd2.FetchDataTask
+import com.shift.gear6.tasks.server.UploadDataTask
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    private var adapter: IAdapter? = null
+    private var snapshot: CarDataSnapshot? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,5 +86,63 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    fun connectToAdapter() {
+        val connectParams = ConnectTask.Params()
+
+        val context = this as Context
+
+        connectParams.callback = object : OnTaskCompleted<IAdapter?> {
+            override fun onTaskCompleted(data: IAdapter?) {
+                if (data != null) {
+                    adapter = data
+                    Toast.makeText(context, "Received adapter!", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(context, "Failed to get adapter!", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+        ConnectTask().execute(connectParams)
+    }
+
+    fun fetchData() {
+        val fetchParams = FetchDataTask.Params()
+
+        fetchParams.adapter = adapter
+
+        fetchParams.getRPM = true
+        fetchParams.getEngineLoad = true
+
+        fetchParams.callback = object : OnTaskCompleted<CarDataSnapshot> {
+            override fun onTaskCompleted(data: CarDataSnapshot) {
+                snapshot = data
+            }
+        }
+
+        FetchDataTask().execute(fetchParams)
+    }
+
+    fun uploadToServer() {
+        val context = this as Context
+
+        val uploadParams = UploadDataTask.Params()
+
+        uploadParams.snapshot = snapshot
+        if (uploadParams.snapshot == null)
+            uploadParams.snapshot = CarDataSnapshot()
+
+        uploadParams.callback = object : OnTaskCompleted<Boolean> {
+            override fun onTaskCompleted(data: Boolean) {
+                if (data) {
+                    Toast.makeText(context, "Upload Successful", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(context, "Upload Failed", Toast.LENGTH_LONG).show()
+                }
+            }
+
+        }
+
+        UploadDataTask().execute(uploadParams)
     }
 }
