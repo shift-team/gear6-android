@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import com.shift.gear6.adapters.IAdapter
 import com.shift.gear6.tasks.obd2.ConnectTask
@@ -16,6 +17,7 @@ import com.shift.gear6.tasks.obd2.FetchDataTask
 import com.shift.gear6.tasks.server.UploadDataTask
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var adapter: IAdapter? = null
@@ -38,6 +40,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
+
+        buttonConnectAdapter.setOnClickListener {
+            connectToAdapter()
+        }
+
+        buttonFetchData.setOnClickListener {
+            fetchData()
+        }
+
+        buttonUploadData.setOnClickListener {
+            uploadToServer()
+        }
     }
 
     override fun onBackPressed() {
@@ -88,7 +102,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    fun connectToAdapter() {
+    private fun connectToAdapter() {
         val connectParams = ConnectTask.Params()
 
         val context = this as Context
@@ -97,16 +111,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             override fun onTaskCompleted(data: IAdapter?) {
                 if (data != null) {
                     adapter = data
-                    Toast.makeText(context, "Received adapter!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Received adapter.", Toast.LENGTH_LONG).show()
                 } else {
-                    Toast.makeText(context, "Failed to get adapter!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Failed to get adapter.", Toast.LENGTH_LONG).show()
                 }
             }
         }
         ConnectTask().execute(connectParams)
     }
 
-    fun fetchData() {
+    private fun fetchData() {
+        if (adapter == null) {
+            Toast.makeText(this, "Cannot fetch data. Adapter is null.", Toast.LENGTH_LONG).show()
+            return
+        }
+
         val fetchParams = FetchDataTask.Params()
 
         fetchParams.adapter = adapter
@@ -123,14 +142,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         FetchDataTask().execute(fetchParams)
     }
 
-    fun uploadToServer() {
+    private fun uploadToServer() {
+        if (snapshot == null) {
+            Toast.makeText(this, "Cannot upload. Snapshot is null.", Toast.LENGTH_LONG).show()
+            return
+        }
         val context = this as Context
 
         val uploadParams = UploadDataTask.Params()
 
         uploadParams.snapshot = snapshot
-        if (uploadParams.snapshot == null)
-            uploadParams.snapshot = CarDataSnapshot()
 
         uploadParams.callback = object : OnTaskCompleted<Boolean> {
             override fun onTaskCompleted(data: Boolean) {

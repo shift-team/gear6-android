@@ -20,14 +20,16 @@ class FetchDataTask : AsyncTask<FetchDataTask.Params, Void, CarDataSnapshot>() {
 
     private var callback: OnTaskCompleted<CarDataSnapshot>? = null
 
-    override fun doInBackground(vararg params: FetchDataTask.Params): CarDataSnapshot {
+    override fun doInBackground(vararg params: FetchDataTask.Params): CarDataSnapshot? {
         callback = params[0].callback
 
         val commandList = buildCommandList(params[0])
 
-        executeCommands(commandList, params[0].adapter!!)
+        if (executeCommands(commandList, params[0].adapter!!)) {
+            return buildSnapshot(params[0], commandList)
+        }
 
-        return buildSnapshot(params[0], commandList)
+        return null
     }
 
     override fun onPostExecute(result: CarDataSnapshot) {
@@ -50,14 +52,20 @@ class FetchDataTask : AsyncTask<FetchDataTask.Params, Void, CarDataSnapshot>() {
         return commandList
     }
 
-    private fun executeCommands(commandList: HashMap<String, ObdCommand>, adapter: IAdapter) {
+    private fun executeCommands(commandList: HashMap<String, ObdCommand>, adapter: IAdapter): Boolean {
         val commands = ObdCommandGroup()
 
         for (cmd in commandList.values) {
             commands.add(cmd)
         }
 
-        commands.run(adapter.getInputStream(), adapter.getOutputStream())
+        return try {
+            commands.run(adapter.getInputStream(), adapter.getOutputStream())
+
+            true
+        } catch (ex: Exception) {
+            false
+        }
     }
 
     private fun buildSnapshot(
