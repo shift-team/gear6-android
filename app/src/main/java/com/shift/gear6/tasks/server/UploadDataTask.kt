@@ -1,13 +1,9 @@
 package com.shift.gear6.tasks.server
 
-import android.content.Context
 import android.os.AsyncTask
-import android.util.Xml
-import android.widget.Toast
+import com.shift.gear6.App
 import com.shift.gear6.CarDataSnapshot
 import com.shift.gear6.Config
-import com.shift.gear6.OnTaskCompleted
-import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
@@ -16,14 +12,19 @@ import java.nio.charset.StandardCharsets
 class UploadDataTask : AsyncTask<UploadDataTask.Params, Void, Boolean>() {
     class Params {
         var snapshot: CarDataSnapshot? = null
-        var callback: OnTaskCompleted<Boolean>? = null
+        var callback: ((Boolean) -> Unit)? = null
+        var app: App? = null
     }
 
-    var callback: OnTaskCompleted<Boolean>? = null
+    private var mCallback: ((Boolean) -> Unit)? = null
 
     override fun doInBackground(vararg params: UploadDataTask.Params): Boolean {
+        if (params.isEmpty() || params[0].snapshot == null) {
+            return false
+        }
+
         try {
-            callback = params[0].callback
+            mCallback = params[0].callback
 
             val url = URL(
                 Config.Web.protocol + "://" +
@@ -34,8 +35,8 @@ class UploadDataTask : AsyncTask<UploadDataTask.Params, Void, Boolean>() {
 
             val conn = url.openConnection() as HttpURLConnection
             conn.requestMethod = "POST"
-            conn.connectTimeout = 5000
-            conn.readTimeout = 5000
+            conn.connectTimeout = Config.Web.timeout
+            conn.readTimeout = Config.Web.timeout
             conn.doOutput = true
             conn.doInput = true
 
@@ -52,14 +53,16 @@ class UploadDataTask : AsyncTask<UploadDataTask.Params, Void, Boolean>() {
 
             return conn.responseCode == HttpURLConnection.HTTP_OK
         } catch (ex: Exception) {
+            if (params[0].app != null && ex.message != null) {
+                params[0].app!!.log.add(ex.message!!)
+            }
             return false
         }
     }
 
     override fun onPostExecute(result: Boolean) {
-        if (callback != null) {
-            callback?.onTaskCompleted(result)
+        if (mCallback != null) {
+            mCallback?.invoke(result)
         }
     }
-
 }

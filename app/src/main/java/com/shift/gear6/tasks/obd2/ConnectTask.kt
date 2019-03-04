@@ -7,41 +7,52 @@ import br.ufrn.imd.obd.commands.protocol.LineFeedOffCommand
 import br.ufrn.imd.obd.commands.protocol.SelectProtocolCommand
 import br.ufrn.imd.obd.commands.protocol.TimeoutCommand
 import br.ufrn.imd.obd.enums.ObdProtocols
-import com.shift.gear6.OnTaskCompleted
+import com.shift.gear6.App
 import com.shift.gear6.adapters.*
+import java.util.*
 
 class ConnectTask : AsyncTask<ConnectTask.Params, Void, IAdapter?>() {
     class Params {
-        var callback: OnTaskCompleted<IAdapter?>? = null
+        var callback: ((IAdapter?) -> Unit)? = null
+        var app: App? = null
     }
 
-    private var callback: OnTaskCompleted<IAdapter?>? = null
-
     override fun doInBackground(vararg params: ConnectTask.Params): IAdapter? {
-        callback = params[0].callback
+        mCallback = params[0].callback
 
         val wifiAdapter = getWifiAdapter()
         if (wifiAdapter != null) {
-            return if (prepareAdapter(wifiAdapter))
-                wifiAdapter
-            else
-                null
+            if (prepareAdapter(wifiAdapter)) {
+                return wifiAdapter
+            } else {
+                if (params[0].app != null) {
+                    params[0].app!!.log.add(Date().toString() + ": Created WiFi adapter, but failed to initialize")
+                }
+                return null
+            }
         }
 
         val blueToothAdapter = getBlueToothAdapter()
         if (blueToothAdapter != null) {
-            return if (prepareAdapter(blueToothAdapter))
-                blueToothAdapter
-            else
-                null
+            if (prepareAdapter(blueToothAdapter)) {
+                return blueToothAdapter
+            } else {
+                if (params[0].app != null) {
+                    params[0].app!!.log.add(Date().toString() + ": Created BT adapter, but failed to initialize")
+                }
+                return null
+            }
         }
 
+        if (params[0].app != null) {
+            params[0].app!!.log.add(Date().toString() + ": No adapter was found")
+        }
         return null
     }
 
     override fun onPostExecute(result: IAdapter?) {
-        if (callback != null) {
-            callback?.onTaskCompleted(result)
+        if (mCallback != null) {
+            mCallback?.invoke(result)
         }
     }
 
@@ -81,4 +92,6 @@ class ConnectTask : AsyncTask<ConnectTask.Params, Void, IAdapter?>() {
             false
         }
     }
+
+    private var mCallback: ((IAdapter?) -> Unit)? = null
 }

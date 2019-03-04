@@ -5,23 +5,26 @@ import br.ufrn.imd.obd.commands.ObdCommand
 import br.ufrn.imd.obd.commands.ObdCommandGroup
 import br.ufrn.imd.obd.commands.engine.LoadCommand
 import br.ufrn.imd.obd.commands.engine.RPMCommand
+import com.shift.gear6.App
 import com.shift.gear6.CarDataSnapshot
-import com.shift.gear6.OnTaskCompleted
 import com.shift.gear6.adapters.IAdapter
 
 class FetchDataTask : AsyncTask<FetchDataTask.Params, Void, CarDataSnapshot>() {
     class Params {
         var adapter: IAdapter? = null
-        var callback: OnTaskCompleted<CarDataSnapshot>? = null
+        var callback: ((CarDataSnapshot) -> Unit)? = null
+
+        var app: App? = null
 
         var getRPM = false
         var getEngineLoad = false
     }
 
-    private var callback: OnTaskCompleted<CarDataSnapshot>? = null
+    private var mCallback: ((CarDataSnapshot) -> Unit)? = null
+    private var mError: String? = null
 
     override fun doInBackground(vararg params: FetchDataTask.Params): CarDataSnapshot? {
-        callback = params[0].callback
+        mCallback = params[0].callback
 
         val commandList = buildCommandList(params[0])
 
@@ -29,12 +32,16 @@ class FetchDataTask : AsyncTask<FetchDataTask.Params, Void, CarDataSnapshot>() {
             return buildSnapshot(params[0], commandList)
         }
 
+        if (params[0].app != null && mError != null) {
+            params[0].app!!.log.add(mError!!)
+        }
+
         return null
     }
 
     override fun onPostExecute(result: CarDataSnapshot) {
-        if (callback != null) {
-            callback?.onTaskCompleted(result)
+        if (mCallback != null) {
+            mCallback?.invoke(result)
         }
     }
 
@@ -64,6 +71,8 @@ class FetchDataTask : AsyncTask<FetchDataTask.Params, Void, CarDataSnapshot>() {
 
             true
         } catch (ex: Exception) {
+            mError = ex.message
+
             false
         }
     }

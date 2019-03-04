@@ -5,25 +5,23 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.net.Socket
 
-class BlueToothAdapter : IAdapter {
-    private var socket: Socket? = null
+class BlueToothAdapter() : IAdapter {
+    private var mConnection: Socket? = null
 
-    constructor()
-    {
+    init {
         /*var adapter = BluetoothAdapter.getDefaultAdapter()
         if (adapter == null)
         {
             throw NullPointerException("Bluetooth is not available on this device")
         }*/
-
         throw NotImplementedError("Bluetooth adapter is not yet implemented")
     }
 
     override fun getInputStream(): InputStream {
-        return getInputStream()
+        return mConnection!!.getInputStream()
     }
 
     override fun getOutputStream(): OutputStream {
-        return getOutputStream()
+        return mConnection!!.getOutputStream()
     }
 }

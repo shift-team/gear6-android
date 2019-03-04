@@ -6,11 +6,13 @@ class Config {
         val hostname = "192.168.0.2"
         val port = 3000
         val uploadPath = "obd2data"
+        val timeout = 5000
     }
 
     class WifiAdapterConfig {
         val ipAddress = "192.168.0.10"
         val port = 35000
+        val timeOut = 2000
     }
 
     companion object {
