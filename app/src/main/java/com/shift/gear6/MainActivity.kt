@@ -1,5 +1,6 @@
 package com.shift.gear6
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.design.widget.NavigationView
@@ -8,10 +9,20 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import com.shift.gear6.adapters.IAdapter
+import com.shift.gear6.tasks.obd2.ConnectTask
+import com.shift.gear6.tasks.obd2.FetchDataTask
+import com.shift.gear6.tasks.server.UploadDataTask
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    private var adapter: IAdapter? = null
+    private var snapshot: CarDataSnapshot? = null
+
+    private var app: App? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +41,34 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
+
+        buttonConnectAdapter.setOnClickListener {
+            connectToAdapter()
+        }
+
+        buttonFetchData.setOnClickListener {
+            fetchData()
+        }
+
+        buttonUploadData.setOnClickListener {
+            /* TODO: This is for debugging purposes. Remove later.
+            ** I hate walking down three floors to test
+            */
+            if (snapshot == null) {
+                val c = CarDataSnapshot()
+                uploadToServer(c)
+            } else {
+                uploadToServer()
+            }
+        }
+
+        buttonLogs.setOnClickListener {
+            val intent = Intent(this, LogViewerActivity::class.java)
+
+            startActivity(intent)
+        }
+
+        app = applicationContext as App
     }
 
     override fun onBackPressed() {
@@ -78,5 +117,65 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    private fun connectToAdapter() {
+        val params = ConnectTask.Params()
+        params.app = app
+
+        params.callback = {
+            if (it != null) {
+                adapter = it
+                Toast.makeText(this, "Received adapter.", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(this, "Failed to get adapter.", Toast.LENGTH_LONG).show()
+            }
+        }
+        ConnectTask().execute(params)
+    }
+
+    private fun fetchData() {
+        if (adapter == null) {
+            Toast.makeText(this, "Cannot fetch data. Adapter is null.", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        val params = FetchDataTask.Params()
+
+        params.adapter = adapter
+        params.app = app
+
+        params.getRPM = true
+        params.getEngineLoad = true
+
+        params.callback = {
+            snapshot = it
+        }
+
+        FetchDataTask().execute(params)
+    }
+
+    private fun uploadToServer() {
+        uploadToServer(snapshot)
+    }
+
+    private fun uploadToServer(snapshot: CarDataSnapshot?) {
+        if (snapshot == null) {
+            Toast.makeText(this, "Cannot upload. Snapshot is null.", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        val params = UploadDataTask.Params()
+        params.snapshot = snapshot
+        params.app = app
+
+        params.callback = {
+            if (it) {
+                Toast.makeText(this, "Upload Successful", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(this, "Upload Failed", Toast.LENGTH_LONG).show()
+            }
+        }
+        UploadDataTask().execute(params)
     }
 }
