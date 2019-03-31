@@ -26,7 +26,7 @@ class ConnectTask : AsyncTask<ConnectTask.Params, Void, IAdapter?>() {
                 return wifiAdapter
             } else {
                 if (params[0].app != null) {
-                    params[0].app!!.log.add(Date().toString() + ": Created WiFi adapter, but failed to initialize")
+                    params[0].app!!.LogMessage("Created WiFi adapter, but failed to initialize")
                 }
                 return null
             }
@@ -38,14 +38,14 @@ class ConnectTask : AsyncTask<ConnectTask.Params, Void, IAdapter?>() {
                 return blueToothAdapter
             } else {
                 if (params[0].app != null) {
-                    params[0].app!!.log.add(Date().toString() + ": Created BT adapter, but failed to initialize")
+                    params[0].app!!.LogMessage("Created BT adapter, but failed to initialize")
                 }
                 return null
             }
         }
 
         if (params[0].app != null) {
-            params[0].app!!.log.add(Date().toString() + ": No adapter was found")
+            params[0].app!!.LogMessage("No adapter was found")
         }
         return null
     }

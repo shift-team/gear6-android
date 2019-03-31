@@ -1,4 +1,4 @@
-<resources>
+﻿<resources>
     <string name="app_name">Gear6</string>
     <string name="title_home">Home</string>
     <string name="title_gauges">Gauges</string>
@@ -22,4 +22,5 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">FAQ</string>
     <string name="action_settings2">Manual</string>
+    <string name="title_activity_snapshot_detail">SnapshotDetailActivity</string>
 </resources>

@@ -10,7 +10,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET"/>
 
-    <application android:name=".App"
+    <application
+            android:name=".App"
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
@@ -18,6 +19,11 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
+        <activity
+                android:name=".SnapshotDetailActivity"
+                android:label="@string/title_activity_snapshot_detail"
+                android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <activity android:name=".LogViewerActivity">
         </activity>
         <activity

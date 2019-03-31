@@ -42,6 +42,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         nav_view.setNavigationItemSelectedListener(this)
 
+        app = applicationContext as App
+
         buttonConnectAdapter.setOnClickListener {
             connectToAdapter()
         }
@@ -51,14 +53,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         buttonUploadData.setOnClickListener {
-            /* TODO: This is for debugging purposes. Remove later.
-            ** I hate walking down three floors to test
-            */
-            if (snapshot == null) {
-                val c = CarDataSnapshot()
-                uploadToServer(c)
-            } else {
+            if (snapshot != null) {
                 uploadToServer()
+            } else {
+                app?.LogMessage("Snapshot is null.")
             }
         }
 
@@ -68,7 +66,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             startActivity(intent)
         }
 
-        app = applicationContext as App
+        buttonDetail.setOnClickListener {
+            val intent = Intent(this, SnapshotDetailActivity::class.java)
+
+            intent.putExtra("snapshot", snapshot)
+
+            startActivity(intent);
+        }
     }
 
     override fun onBackPressed() {
@@ -147,6 +151,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         params.getRPM = true
         params.getEngineLoad = true
+        params.getBarometricPressure = true
 
         params.callback = {
             snapshot = it
