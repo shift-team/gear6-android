@@ -59,18 +59,18 @@
             android:text="Fetch Data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/buttonFetchData" android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/buttonConnectAdapter" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-    />
+            android:id="@+id/buttonFetchData"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/buttonConnectAdapter"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toStartOf="@+id/buttonUploadData"
+            app:layout_constraintHorizontal_chainStyle="packed"/>
     <Button
             android:text="Upload Data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/buttonUploadData"
-            app:layout_constraintTop_toBottomOf="@+id/buttonFetchData" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp"/>
+            tools:layout_editor_absoluteY="425dp"
+            tools:layout_editor_absoluteX="229dp"/>
     <Button
             android:text="View Logs"
             android:layout_width="wrap_content"
@@ -78,6 +78,17 @@
             android:id="@+id/buttonLogs"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.501" android:layout_marginTop="20dp"
-            app:layout_constraintTop_toBottomOf="@+id/buttonUploadData"/>
+            app:layout_constraintHorizontal_bias="0.726" android:layout_marginTop="20dp"
+            app:layout_constraintTop_toBottomOf="@+id/buttonUploadData" android:layout_marginBottom="78dp"
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintVertical_bias="0.0"/>
+    <Button
+            android:text="View Detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonDetail"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.193" android:layout_marginTop="20dp"
+            app:layout_constraintTop_toBottomOf="@+id/buttonUploadData" android:layout_marginBottom="78dp"
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintVertical_bias="0.0"/>
 </android.support.constraint.ConstraintLayout>
