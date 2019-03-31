@@ -128,10 +128,6 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
-### AndroidStudio Patch ###
-
-!/gradle/wrapper/gradle-wrapper.jar
-
 ### Kotlin ###
 # Compiled class file
 
@@ -143,7 +139,7 @@ fabric.properties
 # Mobile Tools for Java (J2ME)
 
 # Package Files #
-*.jar
+#*.jar
 *.nar
 *.zip
 *.tar.gz
