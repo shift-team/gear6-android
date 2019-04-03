@@ -140,6 +140,7 @@ fabric.properties
 
 # Package Files #
 #*.jar
+# Removed .jar for Gradle
 *.nar
 *.zip
 *.tar.gz
