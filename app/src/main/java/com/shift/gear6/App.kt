@@ -10,7 +10,6 @@ import java.util.*
 
 class App : Application() {
     var log = ArrayList<String>()
-    var adapter: IAdapter? = null
 
     fun LogMessage(message: String) {
         log.add(Date().toString() + ": " + message)

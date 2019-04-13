@@ -40,15 +40,15 @@ class UploadDataTask : AsyncTask<UploadDataTask.Params, Void, Boolean>() {
             conn.doOutput = true
             conn.doInput = true
 
-            val postData = params[0].snapshot?.toJSONString()?.toByteArray(StandardCharsets.UTF_8)
+            /*val postData = params[0].snapshot?.toJSONString()?.toByteArray(StandardCharsets.UTF_8)
 
             conn.setRequestProperty("charset", "utf-8")
             conn.setRequestProperty("Content-length", postData?.size.toString())
-            conn.setRequestProperty("Content-Type", "application/json")
+            conn.setRequestProperty("Content-Type", "application/json")*/
 
             val outputStream = DataOutputStream(conn.outputStream)
 
-            outputStream.write(postData)
+            //outputStream.write(postData)
             outputStream.flush()
 
             return conn.responseCode == HttpURLConnection.HTTP_OK

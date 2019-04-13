@@ -23,4 +23,24 @@
     <string name="action_settings">FAQ</string>
     <string name="action_settings2">Manual</string>
     <string name="title_activity_snapshot_detail">SnapshotDetailActivity</string>
+    <string name="obd2_param_rpm">RPM</string>
+    <string name="obd2_param_absoluteLoad">Absolute Load</string>
+    <string name="obd2_param_Load">Load</string>
+    <string name="obd2_param_massAirFlow">Mass Air Flow</string>
+    <string name="obd2_param_oilTemperature">Oil Temperature</string>
+    <string name="obd2_param_relativeThrottlePosition">Relative Throttle Position</string>
+    <string name="obd2_param_throttlePosition">Throttle Position</string>
+    <string name="obd2_param_speed">Speed</string>
+    <string name="obd2_param_airFuelRatio">Air Fuel Ratio</string>
+    <string name="obd2_param_consumptionRate">Consumption Rate</string>
+    <string name="obd2_param_fuelLevel">Fuel Level</string>
+    <string name="obd2_param_fuelTrim">Fuel Trim</string>
+    <string name="obd2_param_widebandAirFuelRatio">Wideband Air Fuel Ratio</string>
+    <string name="obd2_param_barometricPressure">Barometric Pressure</string>
+    <string name="obd2_param_fuelPressure">Fuel Pressure</string>
+    <string name="obd2_param_fuelRailPressure">Fuel Rail Pressure</string>
+    <string name="obd2_param_intakeManifoldPressure">Intake Manifold Pressure</string>
+    <string name="obd2_param_airIntakeTemperature">Air Intake Temperature</string>
+    <string name="obd2_param_ambientAirTemperature">Ambient Air Temperature</string>
+    <string name="obd2_param_engineCoolantTemperature">Engine Coolant Temperature</string>
 </resources>

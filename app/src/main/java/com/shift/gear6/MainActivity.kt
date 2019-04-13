@@ -71,8 +71,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             intent.putExtra("snapshot", snapshot)
 
-            startActivity(intent);
+            startActivity(intent)
         }
+
+        buttonNewActivity.setOnClickListener {
+            val intent = Intent(this, SelectDataToFetchActivity::class.java)
+
+            startActivity(intent)
+        }
+
+        var c = com.anychart.AnyChart.line()
+
+        imageButton2.setChart(c)
     }
 
     override fun onBackPressed() {
@@ -149,12 +159,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         params.adapter = adapter
         params.app = app
 
-        params.getRPM = true
-        params.getEngineLoad = true
-        params.getBarometricPressure = true
-
         params.callback = {
             snapshot = it
+
+            updateCharts()
         }
 
         FetchDataTask().execute(params)
@@ -182,5 +190,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
         UploadDataTask().execute(params)
+    }
+
+    private fun updateCharts() {
+        //imageButton2.setChart
     }
 }

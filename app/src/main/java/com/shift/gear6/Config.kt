@@ -1,5 +1,7 @@
 package com.shift.gear6
 
+/*TODO: Delete this class once information is finalized. */
+
 class Config {
     class WebConfig {
         val protocol = "http"
