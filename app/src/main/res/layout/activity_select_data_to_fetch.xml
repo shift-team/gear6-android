@@ -6,26 +6,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
-        tools:context=".SelectDataToFetchActivity">
+        tools:context=".activities.SelectDataToFetchActivity">
     <ScrollView
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/textView7"
             app:layout_constraintStart_toStartOf="parent" android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/beginCaptureButton">
+            app:layout_constraintBottom_toTopOf="@+id/beginCaptureButton" android:animateLayoutChanges="true">
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                      android:orientation="vertical">
+                      android:orientation="vertical" android:animateLayoutChanges="true">
             <TextView
                     android:text="Engine (tap to contract)"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:id="@+id/engineSubHeader" android:textSize="18sp"/>
+                    android:layout_height="wrap_content" android:id="@+id/engineSubHeader" android:textSize="18sp"
+            />
             <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
                           android:orientation="vertical" android:id="@+id/engineList" android:visibility="visible">
                 <CheckBox
                         android:text="@string/obd2_param_rpm"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" android:id="@+id/rpmCheckBox" android:textSize="14sp"/>
+                        android:layout_height="wrap_content" android:id="@+id/rpmCheckBox" android:textSize="14sp"
+                        android:checked="false"/>
                 <CheckBox
                         android:text="@string/obd2_param_absoluteLoad"
                         android:layout_width="match_parent"
@@ -177,4 +179,18 @@
             android:id="@+id/goBackButton" app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="8dp"
             app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="16dp"/>
+    <Button
+            android:text="Button"
+            android:id="@+id/button7"
+            app:layout_constraintBottom_toBottomOf="parent" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:layout_marginBottom="16dp"
+            app:layout_constraintEnd_toStartOf="@+id/beginCaptureButton" android:layout_marginEnd="8dp"
+            app:layout_constraintStart_toEndOf="@+id/goBackButton" android:layout_marginStart="8dp"
+            android:onClick="test"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/dataEstimateValue" app:layout_constraintStart_toEndOf="@+id/textView7"
+            android:layout_marginStart="8dp"
+            app:layout_constraintTop_toTopOf="@+id/textView7"/>
 </android.support.constraint.ConstraintLayout>

@@ -1,42 +1,53 @@
 package com.shift.gear6.tasks.server
 
 import android.os.AsyncTask
-import com.shift.gear6.App
 import com.shift.gear6.CarDataSnapshot
-import com.shift.gear6.Config
 import java.io.DataOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
-import java.nio.charset.StandardCharsets
 
-class UploadDataTask : AsyncTask<UploadDataTask.Params, Void, Boolean>() {
+class UploadDataTask : AsyncTask<UploadDataTask.Params, Unit, UploadDataTask.Result>() {
     class Params {
+        // TODO: Snapshot needs to be changed to a file upload
         var snapshot: CarDataSnapshot? = null
-        var callback: ((Boolean) -> Unit)? = null
-        var app: App? = null
+        var callback: ((Result) -> Unit)? = null
     }
 
-    private var mCallback: ((Boolean) -> Unit)? = null
+    class Result {
+        var success = true
+    }
 
-    override fun doInBackground(vararg params: UploadDataTask.Params): Boolean {
+    private var myParams: Params? = null
+
+    private val protocol = "http"
+    private val hostname = "192.168.0.2"
+    private val port = 3000
+    private val uploadPath = "obd2data"
+    private val timeout = 5000 // five seconds
+
+    override fun doInBackground(vararg params: Params): Result {
+        val result = Result()
+
         if (params.isEmpty() || params[0].snapshot == null) {
-            return false
+            result.success = false
+
+            return result
         }
 
         try {
-            mCallback = params[0].callback
+            myParams = params[0]
 
             val url = URL(
-                Config.Web.protocol + "://" +
-                        Config.Web.hostname + ":" +
-                        Config.Web.port.toString() + "/" +
-                        Config.Web.uploadPath
+                protocol + "://" +
+                        hostname + ":" +
+                        port.toString() + "/" +
+                        uploadPath
             )
 
             val conn = url.openConnection() as HttpURLConnection
             conn.requestMethod = "POST"
-            conn.connectTimeout = Config.Web.timeout
-            conn.readTimeout = Config.Web.timeout
+            conn.connectTimeout = timeout
+            conn.readTimeout = timeout
             conn.doOutput = true
             conn.doInput = true
 
@@ -51,18 +62,17 @@ class UploadDataTask : AsyncTask<UploadDataTask.Params, Void, Boolean>() {
             //outputStream.write(postData)
             outputStream.flush()
 
-            return conn.responseCode == HttpURLConnection.HTTP_OK
+            result.success = conn.responseCode == HttpURLConnection.HTTP_OK
+            return result
         } catch (ex: Exception) {
-            if (params[0].app != null && ex.message != null) {
-                params[0].app!!.log.add(ex.message!!)
-            }
-            return false
+            result.success = false
+            return result
         }
     }
 
-    override fun onPostExecute(result: Boolean) {
-        if (mCallback != null) {
-            mCallback?.invoke(result)
+    override fun onPostExecute(result: Result) {
+        if (myParams?.callback != null) {
+            myParams?.callback?.invoke(result)
         }
     }
 }

@@ -11,29 +11,45 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-            android:name=".App"
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
-            android:theme="@style/AppTheme"
-            android:usesCleartextTraffic="true">
-        <activity android:name=".CaptureDataActivity">
-        </activity>
-        <activity android:name=".SelectDataToFetchActivity">
+            android:usesCleartextTraffic="true"
+            android:theme="@style/AppTheme">
+        <activity
+                android:name=".activities.SettingsActivity"
+                android:label="@string/title_activity_settings">
         </activity>
         <activity
-                android:name=".SnapshotDetailActivity"
-                android:label="@string/title_activity_snapshot_detail"
-                android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-        <activity android:name=".LogViewerActivity">
+                android:name=".activities.PreviousDriveSelectionActivity"
+                android:label="@string/title_activity_previousDriveSelection">
         </activity>
         <activity
-                android:name=".MainActivity"
+                android:name=".activities.DriveViewerActivity"
+                android:label="@string/title_activity_driveViewer">
+        </activity>
+        <activity
+                android:name=".activities.CaptureDataActivity"
+                android:label="@string/title_activity_captureData">
+        </activity>
+        <activity
+                android:name=".activities.SelectDataToFetchActivity"
+                android:label="@string/title_activity_selectDataToFetch">
+        </activity>
+        <activity
+                android:name=".activities.SnapshotDetailActivity"
+                android:label="@string/title_activity_snapshotDetail">
+        </activity>
+        <activity
+                android:name=".activities.LogViewerActivity"
+                android:label="@string/title_activity_logViewer">
+        </activity>
+        <activity
+                android:name=".activities.MainActivity"
                 android:label="@string/title_activity_main"
-                android:theme="@style/AppTheme.NoActionBar">
+                android:theme="@style/AppThemeNoBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -50,10 +66,6 @@
                         android:path="/app"
                         android:scheme="https"/>
             </intent-filter>
-        </activity>
-        <activity
-                android:name=".LoginActivity"
-                android:label="@string/title_activity_login">
         </activity>
     </application>
 

@@ -1,4 +1,4 @@
-package com.shift.gear6
+package com.shift.gear6.activities
 
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
@@ -7,14 +7,34 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
+import com.shift.gear6.CommandNames
+import com.shift.gear6.R
 import com.shift.gear6.tasks.obd2.FetchDataTask
+import de.siegmar.fastcsv.reader.CsvReader
+import de.siegmar.fastcsv.writer.CsvWriter
 import kotlinx.android.synthetic.main.activity_select_data_to_fetch.*
+import java.io.File
+import java.io.FileReader
+import java.io.FileWriter
 
 class SelectDataToFetchActivity : AppCompatActivity() {
 
     private val params = FetchDataTask.Params()
 
     private var checkBoxMapping: Map<CheckBox, String>? = null
+
+    private var dataEstimate = 0
+    private var paramsSelected = 0
+
+    private fun calculateEstimate() {
+        val BytesPerParam = 4
+        val RefreshHz = 2
+        val SecondsPerMinute = 60
+
+        dataEstimate = paramsSelected * BytesPerParam * RefreshHz * SecondsPerMinute
+
+        dataEstimateValue.text = dataEstimate.toString() + " bytes"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,12 +55,37 @@ class SelectDataToFetchActivity : AppCompatActivity() {
             val intent = Intent(this, CaptureDataActivity::class.java)
 
             intent.putExtra("params", params)
+
+            startActivity(intent)
         }
 
         setCheckBoxClickHandler(engineList)
         setCheckBoxClickHandler(fuelList)
         setCheckBoxClickHandler(pressureList)
         setCheckBoxClickHandler(temperatureList)
+    }
+
+    fun test(view: View) {
+        var file = File(filesDir, "test.txt")
+        var fileWriter = FileWriter(file)
+
+        var writer = CsvWriter()
+        var appender = writer.append(fileWriter)
+
+        appender.appendLine("day", "month", "year")
+        appender.appendLine("15", "04", "2019")
+        appender.close()
+
+        fileWriter.close()
+
+        var fileReader = FileReader(file)
+        var reader = CsvReader()
+        reader.setContainsHeader(true)
+        var csv = reader.read(fileReader)
+
+        button7.text = csv.getRow(0).getField("day")
+
+        fileReader.close()
     }
 
     private fun createCheckBoxMapping(): Map<CheckBox, String> {
@@ -78,9 +123,13 @@ class SelectDataToFetchActivity : AppCompatActivity() {
             val checkbox = view.getChildAt(i) as CheckBox?
             if (checkbox != null) {
                 checkbox.setOnClickListener {
-                    params.dataToGet[checkBoxMapping!!.getValue(checkbox)] = checkbox.isChecked
-                    //TODO: Remove debugging later
-                    (application as App).LogMessage(checkBoxMapping!!.getValue(checkbox) + ": " + params.dataToGet[checkBoxMapping!!.getValue(checkbox)])
+                    params.dataToGet[checkBoxMapping!!.getValue(it as CheckBox)] = (it as CheckBox).isChecked
+                    if ((it as CheckBox).isChecked) {
+                        ++paramsSelected
+                    } else {
+                        --paramsSelected
+                    }
+                    calculateEstimate()
                 }
             }
         }

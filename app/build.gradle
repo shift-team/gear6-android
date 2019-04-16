@@ -38,4 +38,7 @@ dependencies {
 
     // AnyChart Library
     implementation 'com.github.AnyChart:AnyChart-Android:1.1.2'
+
+    // CsvWriter
+    implementation 'de.siegmar:fastcsv:1.0.3'
 }

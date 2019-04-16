@@ -1,12 +1,13 @@
-package com.shift.gear6
+package com.shift.gear6.activities
 
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.widget.TableRow
 import android.widget.TextView
+import com.shift.gear6.CarDataSnapshot
+import com.shift.gear6.R
 import kotlinx.android.synthetic.main.activity_snapshot_detail.*
-import kotlinx.android.synthetic.main.content_snapshot_detail.*
 
 class SnapshotDetailActivity : AppCompatActivity() {
     var snapshot: CarDataSnapshot? = null
@@ -14,11 +15,6 @@ class SnapshotDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_snapshot_detail)
-        setSupportActionBar(toolbar)
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
 
         snapshot = intent?.extras?.getSerializable("snapshot") as CarDataSnapshot?
 

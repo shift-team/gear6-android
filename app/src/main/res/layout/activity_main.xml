@@ -1,26 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
+<android.support.constraint.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/drawer_layout"
-        android:layout_width="match_parent"
+        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        tools:openDrawer="start">
+        android:fitsSystemWindows="true">
 
-    <include
-            layout="@layout/app_bar_main"
+    <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-    <android.support.design.widget.NavigationView
-            android:id="@+id/nav_view"
-            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:fitsSystemWindows="true"
-            app:headerLayout="@layout/nav_header_main"
-            app:menu="@menu/activity_main_drawer"/>
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@android:color/black">
+        <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-</android.support.v4.widget.DrawerLayout>
+            <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" app:srcCompat="@mipmap/header"
+                    android:id="@+id/imageView3"
+                    android:scaleType="fitXY" app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" android:adjustViewBounds="true"
+                    app:layout_constraintTop_toTopOf="parent" android:paddingBottom="2dp"/>
+            <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" app:srcCompat="@mipmap/drive"
+                    android:id="@+id/imageView2" app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" android:scaleType="fitXY" android:adjustViewBounds="true"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView3" android:paddingBottom="2dp"
+                    android:onClick="newDrive_onClick"/>
+            <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" app:srcCompat="@mipmap/prev"
+                    android:id="@+id/imageView4" app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" android:scaleType="fitXY" android:adjustViewBounds="true"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView2" android:paddingBottom="2dp"
+                    android:onClick="onPreviousDrivesClick"/>
+            <ImageView
+                    android:layout_width="0dp"
+                    app:srcCompat="@mipmap/unnamed" android:id="@+id/imageView5"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView4"
+                    app:layout_constraintBottom_toBottomOf="parent" android:scaleType="fitXY"
+                    android:adjustViewBounds="true" android:onClick="settings_onClick"/>
+            <TextView
+                    android:text="Start a New Drive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView16"
+                    app:layout_constraintTop_toTopOf="@+id/imageView2"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+                    app:layout_constraintStart_toStartOf="@+id/imageView2"
+                    app:layout_constraintEnd_toEndOf="@+id/imageView2"
+                    android:textColor="@android:color/white" android:textSize="30sp"
+                    android:onClick="newDrive_onClick"/>
+            <TextView
+                    android:text="View Previous Drives"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView19"
+                    app:layout_constraintTop_toTopOf="@+id/imageView4"
+                    app:layout_constraintStart_toStartOf="@+id/imageView4"
+                    app:layout_constraintEnd_toEndOf="@+id/imageView4" android:textColor="@android:color/white"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView4" android:textSize="30sp"
+                    android:textAllCaps="false" android:onClick="onPreviousDrivesClick"/>
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+
+</android.support.constraint.ConstraintLayout>

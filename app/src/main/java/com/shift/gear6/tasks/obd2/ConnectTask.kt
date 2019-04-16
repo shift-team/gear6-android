@@ -2,84 +2,74 @@ package com.shift.gear6.tasks.obd2
 
 import android.os.AsyncTask
 import br.ufrn.imd.obd.commands.ObdCommandGroup
-import br.ufrn.imd.obd.commands.protocol.EchoOffCommand
-import br.ufrn.imd.obd.commands.protocol.LineFeedOffCommand
-import br.ufrn.imd.obd.commands.protocol.SelectProtocolCommand
-import br.ufrn.imd.obd.commands.protocol.TimeoutCommand
+import br.ufrn.imd.obd.commands.protocol.*
 import br.ufrn.imd.obd.enums.ObdProtocols
-import com.shift.gear6.App
 import com.shift.gear6.adapters.*
-import java.util.*
+import java.net.SocketTimeoutException
 
-class ConnectTask : AsyncTask<ConnectTask.Params, Void, IAdapter?>() {
+class ConnectTask : AsyncTask<ConnectTask.Params, Void, ConnectTask.Result>() {
     class Params {
-        var callback: ((IAdapter?) -> Unit)? = null
-        var app: App? = null
+        enum class AdapterType {WiFi, BlueTooth}
+
+        var adapterType = AdapterType.WiFi
+        var callback: ((Result) -> Unit)? = null
     }
 
-    override fun doInBackground(vararg params: ConnectTask.Params): IAdapter? {
-        mCallback = params[0].callback
+    class Result {
+        var success = true
+        var adapter: IAdapter? = null
+        var error = ""
+    }
 
-        val wifiAdapter = getWifiAdapter()
-        if (wifiAdapter != null) {
-            if (prepareAdapter(wifiAdapter)) {
-                return wifiAdapter
-            } else {
-                if (params[0].app != null) {
-                    params[0].app!!.LogMessage("Created WiFi adapter, but failed to initialize")
-                }
-                return null
+    private var mParams = Params()
+
+    override fun doInBackground(vararg params: ConnectTask.Params): Result {
+        val result = Result()
+
+        mParams = params[0]
+
+        when(mParams.adapterType) {
+            Params.AdapterType.WiFi -> result.adapter = WiFiAdapter()
+            Params.AdapterType.BlueTooth -> result.adapter = BlueToothAdapter()
+        }
+
+        // Failed to make a connection with an adapter such as failing to connect to an IP Address
+        try {
+            if (!result.adapter!!.connect()) {
+                result.success = false
+                result.error = "Failed to connect to the adapter"
+
+                return result
             }
+        } catch (e: SocketTimeoutException) {
+            result.success = false
+            result.error = "Timed out while trying to connect to the adapter. Exception: " + e.message.orEmpty()
+
+            return result
         }
 
-        val blueToothAdapter = getBlueToothAdapter()
-        if (blueToothAdapter != null) {
-            if (prepareAdapter(blueToothAdapter)) {
-                return blueToothAdapter
-            } else {
-                if (params[0].app != null) {
-                    params[0].app!!.LogMessage("Created BT adapter, but failed to initialize")
-                }
-                return null
-            }
+        // Failed to initialize the adapter by sending it preparation commands
+        if (!prepareAdapter(result.adapter!!)) {
+            result.success = false
+            result.error = "Failed to initialize the adapter"
+
+            return result
         }
 
-        if (params[0].app != null) {
-            params[0].app!!.LogMessage("No adapter was found")
-        }
-        return null
+        return result
     }
 
-    override fun onPostExecute(result: IAdapter?) {
-        if (mCallback != null) {
-            mCallback?.invoke(result)
+    override fun onPostExecute(result: Result) {
+        if (mParams.callback != null) {
+            mParams.callback?.invoke(result)
         }
     }
-
-    private fun getWifiAdapter(): IAdapter? {
-        return try {
-            WiFiAdapter()
-        } catch (ex: Exception) {
-            null
-        }
-    }
-
-    private fun getBlueToothAdapter(): IAdapter? {
-        return try {
-            BlueToothAdapter()
-        } catch (ex: Exception) {
-            null
-        } catch (ex: NotImplementedError) {
-            null
-        }
-    }
-
 
     private fun prepareAdapter(adapter: IAdapter): Boolean {
         return try {
             val commands = ObdCommandGroup()
 
-            commands.add(br.ufrn.imd.obd.commands.protocol.ObdResetCommand())
+            commands.add(ObdResetCommand())
             commands.add(EchoOffCommand())
             commands.add(LineFeedOffCommand())
             commands.add(TimeoutCommand(500))
@@ -92,6 +82,4 @@ class ConnectTask : AsyncTask<ConnectTask.Params, Void, IAdapter?>() {
             false
         }
     }
-
-    private var mCallback: ((IAdapter?) -> Unit)? = null
 }

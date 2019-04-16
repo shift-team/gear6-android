@@ -1,0 +1,94 @@
+package com.shift.gear6.activities
+
+import android.support.v7.app.AppCompatActivity
+import android.os.Bundle
+import android.os.Handler
+import android.view.View
+import com.shift.gear6.Global
+import com.shift.gear6.R
+import com.shift.gear6.adapters.IAdapter
+import com.shift.gear6.tasks.obd2.ConnectTask
+import com.shift.gear6.tasks.obd2.FetchDataTask
+import de.siegmar.fastcsv.writer.CsvAppender
+import de.siegmar.fastcsv.writer.CsvWriter
+import kotlinx.android.synthetic.main.activity_capture_data.*
+import java.io.File
+import java.io.FileWriter
+import java.util.*
+
+class CaptureDataActivity : AppCompatActivity() {
+    private var adapter: IAdapter? = null
+
+    private var params = FetchDataTask.Params()
+
+    private lateinit var file: File
+    private lateinit var fileWriter: FileWriter
+    private lateinit var csvWriter: CsvWriter
+    private lateinit var csvAppender: CsvAppender
+
+    private var dataCaptured = 0
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_capture_data)
+
+        file = File(filesDir, Date().toString().replace(" ", "") + ".csv")
+        fileWriter = FileWriter(file)
+        csvWriter = CsvWriter()
+        csvAppender = csvWriter.append(fileWriter)
+
+        params = intent.extras!!.getSerializable("params") as FetchDataTask.Params
+
+        initializeAdapter()
+    }
+
+    private fun initializeAdapter() {
+        val connectTask = ConnectTask()
+
+        val params = ConnectTask.Params()
+        params.adapterType = ConnectTask.Params.AdapterType.WiFi
+        params.callback = {
+            if (it.success) {
+                adapter = it.adapter
+
+                beginCapture()
+            } else {
+                Global.logMessage(it.error)
+            }
+        }
+
+        connectTask.execute(params)
+    }
+
+    private fun beginCapture() {
+        var fetchTask = FetchDataTask()
+        params.callback = {
+            if (!it.success) {
+                Global.logMessage(it.error)
+            } else {
+                for (kv in it.data.data) {
+                    csvAppender.appendField(kv.value)
+                    dataCaptured += 4 // 4 bytes per param
+                }
+                csvAppender.endLine()
+
+                dataCapturedText.text = dataCaptured.toString() + " bytes"
+            }
+
+            val handler = Handler()
+            handler.postDelayed({
+                val fetchTask2 = FetchDataTask()
+                fetchTask2.execute(params)
+            }, 500)
+        }
+
+        fetchTask.execute(params)
+    }
+
+    fun onStopButtonClick(view: View) {
+        // val intent = Intent(this, MainActivity::class.java)
+        // startActivity(intent)
+
+        finish()
+    }
+}

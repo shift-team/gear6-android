@@ -24,4 +24,10 @@ class BlueToothAdapter() : IAdapter {
     override fun getOutputStream(): OutputStream {
         return mConnection!!.getOutputStream()
     }
+
+    override fun connect(): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return false
+    }
+
 }
