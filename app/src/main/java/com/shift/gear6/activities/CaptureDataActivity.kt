@@ -17,6 +17,7 @@ import java.io.FileWriter
 import java.util.*
 
 class CaptureDataActivity : AppCompatActivity() {
+    private var fetchTask = FetchDataTask()
     private var adapter: IAdapter? = null
 
     private var params = FetchDataTask.Params()
@@ -61,28 +62,32 @@ class CaptureDataActivity : AppCompatActivity() {
     }
 
     private fun beginCapture() {
-        var fetchTask = FetchDataTask()
         params.callback = {
-            if (!it.success) {
-                Global.logMessage(it.error)
-            } else {
-                for (kv in it.data.data) {
-                    csvAppender.appendField(kv.value)
-                    dataCaptured += 4 // 4 bytes per param
-                }
-                csvAppender.endLine()
-
-                dataCapturedText.text = dataCaptured.toString() + " bytes"
-            }
-
-            val handler = Handler()
-            handler.postDelayed({
-                val fetchTask2 = FetchDataTask()
-                fetchTask2.execute(params)
-            }, 500)
+            onFetchComplete(it)
         }
+        params.adapter = adapter
 
         fetchTask.execute(params)
+    }
+
+    private fun onFetchComplete(result: FetchDataTask.Result) {
+        if (!result.success) {
+            Global.logMessage(result.error)
+        } else {
+            for (kv in result.data.data) {
+                csvAppender.appendField(kv.value)
+                dataCaptured += 4 // 4 bytes per param
+            }
+            csvAppender.endLine()
+
+            dataCapturedText.text = dataCaptured.toString() + " bytes"
+        }
+
+        val handler = Handler()
+        handler.postDelayed({
+            fetchTask = FetchDataTask()
+            fetchTask.execute(params)
+        }, 500)
     }
 
     fun onStopButtonClick(view: View) {

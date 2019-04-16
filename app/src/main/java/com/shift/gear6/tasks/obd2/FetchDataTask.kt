@@ -17,7 +17,7 @@ import com.shift.gear6.CommandNames
 import com.shift.gear6.adapters.IAdapter
 import java.io.Serializable
 
-class FetchDataTask : AsyncTask<FetchDataTask.Params, Void, FetchDataTask.Result>() {
+class FetchDataTask : AsyncTask<FetchDataTask.Params, Unit, FetchDataTask.Result>() {
     class Params : Serializable {
         var adapter: IAdapter? = null
         var callback: ((Result) -> Unit)? = null
@@ -74,7 +74,7 @@ class FetchDataTask : AsyncTask<FetchDataTask.Params, Void, FetchDataTask.Result
         val commandList = buildCommandList(params[0])
 
         if (executeCommands(commandList, params[0].adapter!!)) {
-            result.data = buildSnapshot(commandList)
+                result.data = buildSnapshot(commandList)
         }
 
         return result
