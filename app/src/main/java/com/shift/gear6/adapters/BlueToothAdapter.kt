@@ -1,11 +1,10 @@
 package com.shift.gear6.adapters
 
-import android.bluetooth.BluetoothAdapter
 import java.io.InputStream
 import java.io.OutputStream
 import java.net.Socket
 
-class BlueToothAdapter() : IAdapter {
+class BlueToothAdapter : IAdapter {
     private var mConnection: Socket? = null
 
     init {

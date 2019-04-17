@@ -4,12 +4,14 @@ import android.os.AsyncTask
 import br.ufrn.imd.obd.commands.ObdCommandGroup
 import br.ufrn.imd.obd.commands.protocol.*
 import br.ufrn.imd.obd.enums.ObdProtocols
-import com.shift.gear6.adapters.*
+import com.shift.gear6.adapters.BlueToothAdapter
+import com.shift.gear6.adapters.IAdapter
+import com.shift.gear6.adapters.WiFiAdapter
 import java.net.SocketTimeoutException
 
 class ConnectTask : AsyncTask<ConnectTask.Params, Void, ConnectTask.Result>() {
     class Params {
-        enum class AdapterType {WiFi, BlueTooth}
+        enum class AdapterType { WiFi, BlueTooth }
 
         var adapterType = AdapterType.WiFi
         var callback: ((Result) -> Unit)? = null
@@ -23,12 +25,12 @@ class ConnectTask : AsyncTask<ConnectTask.Params, Void, ConnectTask.Result>() {
 
     private var mParams = Params()
 
-    override fun doInBackground(vararg params: ConnectTask.Params): Result {
+    override fun doInBackground(vararg params: Params): Result {
         val result = Result()
 
         mParams = params[0]
 
-        when(mParams.adapterType) {
+        when (mParams.adapterType) {
             Params.AdapterType.WiFi -> result.adapter = WiFiAdapter()
             Params.AdapterType.BlueTooth -> result.adapter = BlueToothAdapter()
         }

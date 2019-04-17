@@ -1,7 +1,7 @@
 package com.shift.gear6.activities
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.widget.TextView
 import com.shift.gear6.Global
 import com.shift.gear6.R

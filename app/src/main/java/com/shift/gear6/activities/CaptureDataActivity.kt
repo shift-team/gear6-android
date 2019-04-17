@@ -1,9 +1,10 @@
 package com.shift.gear6.activities
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.support.v7.app.AppCompatActivity
 import android.view.View
+import com.shift.gear6.CommandNames
 import com.shift.gear6.Global
 import com.shift.gear6.R
 import com.shift.gear6.adapters.IAdapter
@@ -40,6 +41,13 @@ class CaptureDataActivity : AppCompatActivity() {
 
         params = intent.extras!!.getSerializable("params") as FetchDataTask.Params
 
+        for (kv in params.dataToGet) {
+            if (kv.value) {
+                csvAppender.appendField(kv.key)
+            }
+        }
+        csvAppender.flush()
+
         initializeAdapter()
     }
 
@@ -73,14 +81,18 @@ class CaptureDataActivity : AppCompatActivity() {
     private fun onFetchComplete(result: FetchDataTask.Result) {
         if (!result.success) {
             Global.logMessage(result.error)
+
+            return
         } else {
             for (kv in result.data.data) {
                 csvAppender.appendField(kv.value)
                 dataCaptured += 4 // 4 bytes per param
             }
             csvAppender.endLine()
+            csvAppender.flush()
 
             dataCapturedText.text = dataCaptured.toString() + " bytes"
+            currentRPM.text = result.data.data[CommandNames.RPM]
         }
 
         val handler = Handler()
@@ -93,6 +105,11 @@ class CaptureDataActivity : AppCompatActivity() {
     fun onStopButtonClick(view: View) {
         // val intent = Intent(this, MainActivity::class.java)
         // startActivity(intent)
+
+        fetchTask.cancel(true)
+
+        csvAppender.close()
+        fileWriter.close()
 
         finish()
     }

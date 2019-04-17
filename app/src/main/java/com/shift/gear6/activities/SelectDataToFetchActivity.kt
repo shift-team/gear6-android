@@ -1,8 +1,8 @@
 package com.shift.gear6.activities
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
@@ -66,7 +66,7 @@ class SelectDataToFetchActivity : AppCompatActivity() {
     }
 
     fun test(view: View) {
-        var file = File(filesDir, "test.txt")
+        var file = File(filesDir, "test.csv")
         var fileWriter = FileWriter(file)
 
         var writer = CsvWriter()
@@ -123,8 +123,8 @@ class SelectDataToFetchActivity : AppCompatActivity() {
             val checkbox = view.getChildAt(i) as CheckBox?
             if (checkbox != null) {
                 checkbox.setOnClickListener {
-                    params.dataToGet[checkBoxMapping!!.getValue(it as CheckBox)] = (it as CheckBox).isChecked
-                    if ((it as CheckBox).isChecked) {
+                    params.dataToGet[checkBoxMapping!!.getValue(it as CheckBox)] = it.isChecked
+                    if (it.isChecked) {
                         ++paramsSelected
                     } else {
                         --paramsSelected

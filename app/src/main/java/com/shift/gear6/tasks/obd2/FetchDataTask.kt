@@ -25,7 +25,7 @@ class FetchDataTask : AsyncTask<FetchDataTask.Params, Unit, FetchDataTask.Result
         var dataToGet = HashMap<String, Boolean>()
     }
 
-    class Result() {
+    class Result {
         var data = CarDataSnapshot()
         var success = true
         var error = ""
@@ -36,8 +36,8 @@ class FetchDataTask : AsyncTask<FetchDataTask.Params, Unit, FetchDataTask.Result
 
     private val commandMap = createCommandMap()
 
-    private fun createCommandMap(): Map<String, (()->(ObdCommand))> {
-        val map = HashMap<String, (()->(ObdCommand))>()
+    private fun createCommandMap(): Map<String, (() -> (ObdCommand))> {
+        val map = HashMap<String, (() -> (ObdCommand))>()
 
         map[CommandNames.WidebandAirFuelRatio] = { WidebandAirFuelRatioCommand() }
         map[CommandNames.ThrottlePosition] = { ThrottlePositionCommand() }
@@ -74,7 +74,7 @@ class FetchDataTask : AsyncTask<FetchDataTask.Params, Unit, FetchDataTask.Result
         val commandList = buildCommandList(params[0])
 
         if (executeCommands(commandList, params[0].adapter!!)) {
-                result.data = buildSnapshot(commandList)
+            result.data = buildSnapshot(commandList)
         }
 
         return result
@@ -122,7 +122,7 @@ class FetchDataTask : AsyncTask<FetchDataTask.Params, Unit, FetchDataTask.Result
         val snapshot = CarDataSnapshot()
 
         for (c in commandList) {
-            snapshot.data[c.key] = c.value.formattedResult + " " + c.value.resultUnit
+            snapshot.data[c.key] = c.value.formattedResult
         }
 
         return snapshot

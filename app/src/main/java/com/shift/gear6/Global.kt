@@ -1,9 +1,5 @@
 package com.shift.gear6
 
-import com.shift.gear6.adapters.IAdapter
-import java.util.concurrent.locks.Lock
-import java.util.concurrent.locks.LockSupport
-
 class Global {
     companion object {
         @JvmStatic
