@@ -41,4 +41,7 @@ dependencies {
 
     // CsvWriter
     implementation 'de.siegmar:fastcsv:1.0.3'
+
+    // Retrofit2 for HTTP
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
 }
