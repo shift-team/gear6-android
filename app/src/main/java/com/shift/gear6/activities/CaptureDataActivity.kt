@@ -96,11 +96,11 @@ class CaptureDataActivity : AppCompatActivity() {
             currentRPM.text = result.data.data[CommandNames.RPM]
         }
 
-        val handler = Handler()
-        handler.postDelayed({
+        /*val handler = Handler()
+        handler.postDelayed({*/
             fetchTask = FetchDataTask()
             fetchTask.execute(params)
-        }, 500)
+        //}, 500)
     }
 
     fun onStopButtonClick(view: View) {
