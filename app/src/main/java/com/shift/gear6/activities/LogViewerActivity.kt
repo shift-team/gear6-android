@@ -1,16 +1,13 @@
-package com.shift.gear6
+package com.shift.gear6.activities
 
-import android.app.Activity
-import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.widget.TextView
+import com.shift.gear6.Global
+import com.shift.gear6.R
 import kotlinx.android.synthetic.main.activity_log_viewer.*
 
 class LogViewerActivity : AppCompatActivity() {
-
-    var backActivity: Activity? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log_viewer)
@@ -19,12 +16,10 @@ class LogViewerActivity : AppCompatActivity() {
             finish()
         }
 
-        logEntries.removeAllViews()
-
-        val app = applicationContext as App
-        for (entry in app.log) {
+        for (message in Global.log) {
             val view = TextView(logEntries.context)
-            view.text = entry
+            view.text = message
+
             logEntries.addView(view)
         }
     }

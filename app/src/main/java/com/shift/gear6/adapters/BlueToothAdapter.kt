@@ -1,11 +1,10 @@
 package com.shift.gear6.adapters
 
-import android.bluetooth.BluetoothAdapter
 import java.io.InputStream
 import java.io.OutputStream
 import java.net.Socket
 
-class BlueToothAdapter() : IAdapter {
+class BlueToothAdapter : IAdapter {
     private var mConnection: Socket? = null
 
     init {
@@ -24,4 +23,10 @@ class BlueToothAdapter() : IAdapter {
     override fun getOutputStream(): OutputStream {
         return mConnection!!.getOutputStream()
     }
+
+    override fun connect(): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return false
+    }
+
 }

@@ -7,4 +7,6 @@ interface IAdapter {
     fun getInputStream(): InputStream
 
     fun getOutputStream(): OutputStream
+
+    fun connect(): Boolean
 }

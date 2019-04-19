@@ -32,6 +32,16 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    //OBD2 Java API
+
+    // OBD2 Java API
     implementation 'com.github.eltonvs:java-obd-api:0.0.1'
+
+    // AnyChart Library
+    implementation 'com.github.AnyChart:AnyChart-Android:1.1.2'
+
+    // CsvWriter
+    implementation 'de.siegmar:fastcsv:1.0.3'
+
+    // Retrofit2 for HTTP
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
 }
