@@ -122,7 +122,7 @@ class FetchDataTask : AsyncTask<FetchDataTask.Params, Unit, FetchDataTask.Result
         val snapshot = CarDataSnapshot()
 
         for (c in commandList) {
-            snapshot.data[c.key] = c.value.formattedResult
+            snapshot.data[c.key] = c.value.calculatedResult
         }
 
         return snapshot
