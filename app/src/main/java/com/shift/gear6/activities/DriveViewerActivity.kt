@@ -1,28 +1,24 @@
 package com.shift.gear6.activities
 
-import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.widget.TableRow
 import android.widget.TextView
 import de.siegmar.fastcsv.reader.CsvReader
 import kotlinx.android.synthetic.main.activity_drive_viewer.*
 import okhttp3.MediaType
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Retrofit
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import util.FileUploadService
 import util.ServiceGenerator
 import java.io.File
 import java.io.FileReader
-import java.net.URI
-import okhttp3.ResponseBody
-import android.R.attr.description
-import android.util.Log
-import retrofit2.Callback
-import okhttp3.MultipartBody
-import retrofit2.Call
-import retrofit2.Response
 
 
 class DriveViewerActivity : AppCompatActivity() {
