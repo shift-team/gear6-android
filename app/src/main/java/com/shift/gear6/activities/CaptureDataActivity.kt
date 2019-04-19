@@ -46,6 +46,7 @@ class CaptureDataActivity : AppCompatActivity() {
                 csvAppender.appendField(kv.key)
             }
         }
+        csvAppender.endLine()
         csvAppender.flush()
 
         initializeAdapter()
