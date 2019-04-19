@@ -14,6 +14,7 @@ import br.ufrn.imd.obd.commands.temperature.AmbientAirTemperatureCommand
 import br.ufrn.imd.obd.commands.temperature.EngineCoolantTemperatureCommand
 import com.shift.gear6.CarDataSnapshot
 import com.shift.gear6.CommandNames
+import com.shift.gear6.Global
 import com.shift.gear6.adapters.IAdapter
 import java.io.Serializable
 
@@ -105,15 +106,19 @@ class FetchDataTask : AsyncTask<FetchDataTask.Params, Unit, FetchDataTask.Result
             commands.add(cmd)
         }
 
-        return try {
+        try {
             commands.run(adapter.getInputStream(), adapter.getOutputStream())
 
-            true
         } catch (ex: Exception) {
             mError = ex.message
-
-            false
+            return false
         }
+
+        for (cmd in commandList) {
+            Global.logMessage(cmd.key + "took " + cmd.value.elapsedTime.toString() + " ms") // I guess its in milliseconds
+        }
+
+        return true
     }
 
     private fun buildSnapshot(
