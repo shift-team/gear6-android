@@ -1,5 +1,6 @@
 package com.shift.gear6.activities
 
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -7,8 +8,21 @@ import android.widget.TableRow
 import android.widget.TextView
 import de.siegmar.fastcsv.reader.CsvReader
 import kotlinx.android.synthetic.main.activity_drive_viewer.*
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import retrofit2.Retrofit
+import util.FileUploadService
+import util.ServiceGenerator
 import java.io.File
 import java.io.FileReader
+import java.net.URI
+import okhttp3.ResponseBody
+import android.R.attr.description
+import android.util.Log
+import retrofit2.Callback
+import okhttp3.MultipartBody
+import retrofit2.Call
+import retrofit2.Response
 
 
 class DriveViewerActivity : AppCompatActivity() {
@@ -62,9 +76,9 @@ class DriveViewerActivity : AppCompatActivity() {
         val url =
             protocol + "://" +
                     hostname + ":" +
-                    port.toString() + "/" +
-                    uploadPath
-
+                    port.toString()
+        doUpload(url)
+        return
 
         /*val uploadTask = UploadDataTask()
         val params = UploadDataTask.Params()
@@ -79,5 +93,37 @@ class DriveViewerActivity : AppCompatActivity() {
         }
 
         uploadTask.execute(params)*/
+
+    }
+
+    private fun doUpload(url: String) {
+        val service = ServiceGenerator.createService(FileUploadService::class.java)
+
+        val file = File(filesDir, filename)
+
+        val requestBody = RequestBody.create(MediaType.parse("text/csv"), file)
+
+        // MultipartBody.Part is used to send also the actual file name
+        val body = MultipartBody.Part.createFormData("file", file.name, requestBody)
+
+        // add another part within the multipart request
+        val descriptionString = "hello, this is description speaking"
+        val description = RequestBody.create(
+            okhttp3.MultipartBody.FORM, descriptionString
+        )
+
+        val call = service.upload(description, body)
+        call.enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+                Log.v("Upload", "success")
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Log.e("Upload error:", t.message)
+            }
+        })
     }
 }
