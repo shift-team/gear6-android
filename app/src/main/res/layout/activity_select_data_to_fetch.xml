@@ -179,14 +179,6 @@
             android:id="@+id/goBackButton" app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="8dp"
             app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="16dp"/>
-    <Button
-            android:text="Button"
-            android:id="@+id/button7"
-            app:layout_constraintBottom_toBottomOf="parent" android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:layout_marginBottom="16dp"
-            app:layout_constraintEnd_toStartOf="@+id/beginCaptureButton" android:layout_marginEnd="8dp"
-            app:layout_constraintStart_toEndOf="@+id/goBackButton" android:layout_marginStart="8dp"
-            android:onClick="test"/>
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
