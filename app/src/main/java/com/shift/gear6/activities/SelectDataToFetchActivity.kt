@@ -65,29 +65,6 @@ class SelectDataToFetchActivity : AppCompatActivity() {
         setCheckBoxClickHandler(temperatureList)
     }
 
-    fun test(view: View) {
-        var file = File(filesDir, "test.csv")
-        var fileWriter = FileWriter(file)
-
-        var writer = CsvWriter()
-        var appender = writer.append(fileWriter)
-
-        appender.appendLine("day", "month", "year")
-        appender.appendLine("15", "04", "2019")
-        appender.close()
-
-        fileWriter.close()
-
-        var fileReader = FileReader(file)
-        var reader = CsvReader()
-        reader.setContainsHeader(true)
-        var csv = reader.read(fileReader)
-
-        button7.text = csv.getRow(0).getField("day")
-
-        fileReader.close()
-    }
-
     private fun createCheckBoxMapping(): Map<CheckBox, String> {
         val map = HashMap<CheckBox, String>()
 
