@@ -15,8 +15,6 @@ class PreviousDriveSelectionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_previous_drive_selection)
 
-        var prevView: View? = null
-
         val headerRow = TableRow(this)
         val nameHeader = TextView(this)
         nameHeader.text = "Filename"
