@@ -92,6 +92,11 @@ class DriveViewerActivity : AppCompatActivity() {
 
     }
 
+    fun onDeleteButtonClicked(view: View) {
+        File(filesDir, filename).delete()
+        finish()
+    }
+
     private fun doUpload(url: String) {
         val service = ServiceGenerator.createService(FileUploadService::class.java)
 
@@ -103,12 +108,12 @@ class DriveViewerActivity : AppCompatActivity() {
         val body = MultipartBody.Part.createFormData("file", file.name, requestBody)
 
         // add another part within the multipart request
-        val descriptionString = "hello, this is description speaking"
-        val description = RequestBody.create(
-            okhttp3.MultipartBody.FORM, descriptionString
+        val nameString = "driveLog"
+        val name = RequestBody.create(
+            okhttp3.MultipartBody.FORM, nameString
         )
 
-        val call = service.upload(description, body)
+        val call = service.upload(name, body)
         call.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(
                 call: Call<ResponseBody>,
