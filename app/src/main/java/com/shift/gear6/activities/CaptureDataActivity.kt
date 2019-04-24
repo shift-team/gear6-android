@@ -15,6 +15,7 @@ import de.siegmar.fastcsv.writer.CsvWriter
 import kotlinx.android.synthetic.main.activity_capture_data.*
 import java.io.File
 import java.io.FileWriter
+import java.text.SimpleDateFormat
 import java.util.*
 
 class CaptureDataActivity : AppCompatActivity() {
@@ -22,6 +23,8 @@ class CaptureDataActivity : AppCompatActivity() {
     private var adapter: IAdapter? = null
 
     private var params = FetchDataTask.Params()
+
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
     private lateinit var file: File
     private lateinit var fileWriter: FileWriter
@@ -34,13 +37,14 @@ class CaptureDataActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_capture_data)
 
-        file = File(filesDir, Date().toString().replace(" ", "") + ".csv")
+        file = File(filesDir, dateFormat.format(Date()).replace(" ", "_") + ".csv")
         fileWriter = FileWriter(file)
         csvWriter = CsvWriter()
         csvAppender = csvWriter.append(fileWriter)
 
         params = intent.extras!!.getSerializable("params") as FetchDataTask.Params
 
+        csvAppender.appendField("Timestamp")
         for (kv in params.dataToGet) {
             if (kv.value) {
                 csvAppender.appendField(kv.key)
@@ -85,6 +89,7 @@ class CaptureDataActivity : AppCompatActivity() {
 
             return
         } else {
+            csvAppender.appendField(dateFormat.format(Date()))
             for (kv in result.data.data) {
                 csvAppender.appendField(kv.value)
                 dataCaptured += 4 // 4 bytes per param
