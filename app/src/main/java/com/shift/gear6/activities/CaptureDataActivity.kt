@@ -37,7 +37,7 @@ class CaptureDataActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_capture_data)
 
-        file = File(filesDir, dateFormat.format(Date()).replace(" ", "_") + ".csv")
+        file = File(filesDir, dateFormat.format(Date()) + ".csv")
         fileWriter = FileWriter(file)
         csvWriter = CsvWriter()
         csvAppender = csvWriter.append(fileWriter)

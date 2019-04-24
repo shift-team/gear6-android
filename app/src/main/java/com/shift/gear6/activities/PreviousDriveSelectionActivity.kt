@@ -22,6 +22,8 @@ class PreviousDriveSelectionActivity : AppCompatActivity() {
         val sizeHeader = TextView(this)
         sizeHeader.text = "Size"
 
+        headerRow.setPadding(0, 0, 0, 20)
+
         headerRow.addView(nameHeader)
         headerRow.addView(sizeHeader)
 
@@ -30,9 +32,11 @@ class PreviousDriveSelectionActivity : AppCompatActivity() {
         for (file in filesDir.listFiles()) {
             if (file.name.indexOf(".csv") != -1) {
                 val row = TableRow(this)
-                row.setPadding(0, 5, 0, 5)
+                row.setPadding(0, 0, 0, 40)
+
                 val view = TextView(this)
                 view.text = file.name
+                view.setPadding(0, 0, 20, 0)
 
                 val size = TextView(this)
                 size.text = file.length().toString() + " bytes"

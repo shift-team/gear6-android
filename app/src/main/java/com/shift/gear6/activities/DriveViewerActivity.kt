@@ -43,19 +43,23 @@ class DriveViewerActivity : AppCompatActivity() {
         val contents = csvReader.read(fileReader)
 
         val headerRow = TableRow(this)
+        headerRow.setPadding(0, 0, 0, 5)
         table.addView(headerRow)
 
         for (header in contents.header) {
             val view = TextView(this)
             view.text = header
+            view.setPadding(0, 0, 20, 0)
             headerRow.addView(view)
         }
 
         for (row in contents.rows) {
             val newRow = TableRow(this)
+            newRow.setPadding(0, 0, 0, 10)
             table.addView(newRow)
             for (data in row.fields) {
                 val view = TextView(this)
+                view.setPadding(0, 0, 20, 0)
                 view.text = data
                 newRow.addView(view)
             }
