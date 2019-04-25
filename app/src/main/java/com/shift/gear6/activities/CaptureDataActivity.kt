@@ -1,8 +1,10 @@
 package com.shift.gear6.activities
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.TableRow
@@ -24,6 +26,7 @@ import java.util.*
 
 class CaptureDataActivity : AppCompatActivity() {
     private class RecordRow(context: Context) {
+        public val parameterNameView = TextView(context)
         public val currentView = TextView(context)
         public val lowView = TextView(context)
         public val highView = TextView(context)
@@ -74,22 +77,30 @@ class CaptureDataActivity : AppCompatActivity() {
         initializeAdapter()
     }
 
+    private fun padElement(view: View) {
+        view.setPadding(0, 10, 20, 10)
+    }
+
     private fun createTable(dataToGet: HashMap<String, Boolean>) {
         val headerRow = TableRow(this)
 
         val headerParameter = TextView(this)
         headerParameter.text = "Parameter"
+        padElement(headerParameter)
 
         headerRow.addView(headerParameter)
 
         val headerCurrent = TextView(this)
         headerCurrent.text = "Current"
+        padElement(headerCurrent)
 
         val headerLow = TextView(this)
         headerLow.text = "Low"
+        padElement(headerLow)
 
         val headerHigh = TextView(this)
         headerHigh.text = "High"
+        padElement(headerHigh)
 
         headerRow.addView(headerCurrent)
         headerRow.addView(headerLow)
@@ -104,12 +115,15 @@ class CaptureDataActivity : AppCompatActivity() {
 
             val row = TableRow(this)
 
-            val parameterName= TextView(this)
-            parameterName.text = kvPair.key
-
             val record = RecordRow(this)
+            record.parameterNameView.text = kvPair.key
 
-            row.addView(parameterName)
+            padElement(record.parameterNameView)
+            padElement(record.currentView)
+            padElement(record.lowView)
+            padElement(record.highView)
+
+            row.addView(record.parameterNameView)
             row.addView(record.currentView)
             row.addView(record.lowView)
             row.addView(record.highView)
@@ -131,6 +145,7 @@ class CaptureDataActivity : AppCompatActivity() {
 
                 beginCapture()
             } else {
+                showErrorDialog("Failed to connect to OBD2 adapter.")
                 Global.logMessage(it.error)
             }
         }
@@ -147,10 +162,20 @@ class CaptureDataActivity : AppCompatActivity() {
         fetchTask.execute(params)
     }
 
+    private fun showErrorDialog(error: String) {
+        AlertDialog.Builder(this)
+            .setMessage(error)
+            .setPositiveButton("Go back") { dialogInterface: DialogInterface, i: Int ->
+                File(filesDir, filename).delete()
+                dialogInterface.dismiss()
+                finish()
+            }.create().show()
+    }
+
     private fun onFetchComplete(result: FetchDataTask.Result) {
         if (!result.success) {
             Global.logMessage(result.error)
-
+            showErrorDialog("Failed to fetch data from OBD2 adapter.")
             return
         } else {
             csvAppender.appendField(dateFormat.format(Date()))
