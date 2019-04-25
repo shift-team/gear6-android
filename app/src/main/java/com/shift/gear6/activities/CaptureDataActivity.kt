@@ -1,9 +1,13 @@
 package com.shift.gear6.activities
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.widget.TableRow
+import android.widget.TextView
+import com.shift.gear6.CarDataSnapshot
 import com.shift.gear6.CommandNames
 import com.shift.gear6.Global
 import com.shift.gear6.R
@@ -19,6 +23,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class CaptureDataActivity : AppCompatActivity() {
+    private class RecordRow(context: Context) {
+        public val currentView = TextView(context)
+        public val lowView = TextView(context)
+        public val highView = TextView(context)
+    }
+
     private var fetchTask = FetchDataTask()
     private var adapter: IAdapter? = null
 
@@ -31,18 +41,26 @@ class CaptureDataActivity : AppCompatActivity() {
     private lateinit var csvWriter: CsvWriter
     private lateinit var csvAppender: CsvAppender
 
+    private var filename = ""
+
     private var dataCaptured = 0
+
+    private val tableRecords = HashMap<String, RecordRow>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_capture_data)
 
-        file = File(filesDir, dateFormat.format(Date()) + ".csv")
+        filename = dateFormat.format(Date()) + ".csv"
+
+        file = File(filesDir, filename)
         fileWriter = FileWriter(file)
         csvWriter = CsvWriter()
         csvAppender = csvWriter.append(fileWriter)
 
         params = intent.extras!!.getSerializable("params") as FetchDataTask.Params
+
+        createTable(params.dataToGet)
 
         csvAppender.appendField("Timestamp")
         for (kv in params.dataToGet) {
@@ -54,6 +72,52 @@ class CaptureDataActivity : AppCompatActivity() {
         csvAppender.flush()
 
         initializeAdapter()
+    }
+
+    private fun createTable(dataToGet: HashMap<String, Boolean>) {
+        val headerRow = TableRow(this)
+
+        val headerParameter = TextView(this)
+        headerParameter.text = "Parameter"
+
+        headerRow.addView(headerParameter)
+
+        val headerCurrent = TextView(this)
+        headerCurrent.text = "Current"
+
+        val headerLow = TextView(this)
+        headerLow.text = "Low"
+
+        val headerHigh = TextView(this)
+        headerHigh.text = "High"
+
+        headerRow.addView(headerCurrent)
+        headerRow.addView(headerLow)
+        headerRow.addView(headerHigh)
+
+        table.addView(headerRow)
+
+        for (kvPair in dataToGet) {
+            if (!kvPair.value) {
+                continue
+            }
+
+            val row = TableRow(this)
+
+            val parameterName= TextView(this)
+            parameterName.text = kvPair.key
+
+            val record = RecordRow(this)
+
+            row.addView(parameterName)
+            row.addView(record.currentView)
+            row.addView(record.lowView)
+            row.addView(record.highView)
+
+            table.addView(row)
+
+            tableRecords.put(kvPair.key, record)
+        }
     }
 
     private fun initializeAdapter() {
@@ -98,24 +162,49 @@ class CaptureDataActivity : AppCompatActivity() {
             csvAppender.flush()
 
             dataCapturedText.text = dataCaptured.toString() + " bytes"
-            currentRPM.text = result.data.data[CommandNames.RPM]
+
+            updateUI(result.data)
         }
 
         /*val handler = Handler()
         handler.postDelayed({*/
-            fetchTask = FetchDataTask()
-            fetchTask.execute(params)
+        fetchTask = FetchDataTask()
+        fetchTask.execute(params)
         //}, 500)
     }
 
-    fun onStopButtonClick(view: View) {
-        // val intent = Intent(this, MainActivity::class.java)
-        // startActivity(intent)
+    private fun updateUI(data: CarDataSnapshot) {
+        for (dataPair in data.data) {
+            tableRecords[dataPair.key]!!.currentView.text = dataPair.value
 
+            val current = dataPair.value.toDoubleOrNull()
+            val low = tableRecords[dataPair.key]!!.lowView.text.toString().toDoubleOrNull()
+            val high = tableRecords[dataPair.key]!!.highView.text.toString().toDoubleOrNull()
+
+            if (current == null) {
+                return
+            }
+
+            if (low == null || current < low) {
+                tableRecords[dataPair.key]!!.lowView.text = current.toString()
+            }
+
+            if (high == null || current > high) {
+                tableRecords[dataPair.key]!!.highView.text = current.toString()
+            }
+        }
+    }
+
+    fun onStopButtonClick(view: View) {
         fetchTask.cancel(true)
 
         csvAppender.close()
         fileWriter.close()
+
+        val intent = Intent(this, DriveViewerActivity::class.java)
+        intent.putExtra("filename", filename)
+
+        startActivity(intent)
 
         finish()
     }

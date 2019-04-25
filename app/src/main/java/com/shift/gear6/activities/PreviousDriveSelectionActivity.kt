@@ -3,7 +3,6 @@ package com.shift.gear6.activities
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.View
 import android.widget.TableRow
 import android.widget.TextView
 import com.shift.gear6.R
@@ -15,20 +14,18 @@ class PreviousDriveSelectionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_previous_drive_selection)
 
-        val headerRow = TableRow(this)
-        val nameHeader = TextView(this)
-        nameHeader.text = "Filename"
+        createTable()
+        populateTable()
+    }
 
-        val sizeHeader = TextView(this)
-        sizeHeader.text = "Size"
+    override fun onResume() {
+        super.onResume()
 
-        headerRow.setPadding(0, 0, 0, 20)
+        createTable()
+        populateTable()
+    }
 
-        headerRow.addView(nameHeader)
-        headerRow.addView(sizeHeader)
-
-        table.addView(headerRow)
-
+    private fun populateTable() {
         for (file in filesDir.listFiles()) {
             if (file.name.indexOf(".csv") != -1) {
                 val row = TableRow(this)
@@ -54,5 +51,23 @@ class PreviousDriveSelectionActivity : AppCompatActivity() {
                 table.addView(row)
             }
         }
+    }
+
+    private fun createTable() {
+        table.removeAllViews()
+
+        val headerRow = TableRow(this)
+        val nameHeader = TextView(this)
+        nameHeader.text = "Filename"
+
+        val sizeHeader = TextView(this)
+        sizeHeader.text = "Size"
+
+        headerRow.setPadding(0, 0, 0, 20)
+
+        headerRow.addView(nameHeader)
+        headerRow.addView(sizeHeader)
+
+        table.addView(headerRow)
     }
 }

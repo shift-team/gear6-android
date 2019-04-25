@@ -10,12 +10,7 @@ import android.widget.TextView
 import com.shift.gear6.CommandNames
 import com.shift.gear6.R
 import com.shift.gear6.tasks.obd2.FetchDataTask
-import de.siegmar.fastcsv.reader.CsvReader
-import de.siegmar.fastcsv.writer.CsvWriter
 import kotlinx.android.synthetic.main.activity_select_data_to_fetch.*
-import java.io.File
-import java.io.FileReader
-import java.io.FileWriter
 
 class SelectDataToFetchActivity : AppCompatActivity() {
 

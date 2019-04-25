@@ -1,5 +1,7 @@
 package com.shift.gear6.activities
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -19,6 +21,7 @@ import util.FileUploadService
 import util.ServiceGenerator
 import java.io.File
 import java.io.FileReader
+import java.lang.IllegalStateException
 
 
 class DriveViewerActivity : AppCompatActivity() {
@@ -40,29 +43,44 @@ class DriveViewerActivity : AppCompatActivity() {
         val csvReader = CsvReader()
 
         csvReader.setContainsHeader(true)
-        val contents = csvReader.read(fileReader)
 
-        val headerRow = TableRow(this)
-        headerRow.setPadding(0, 0, 0, 5)
-        table.addView(headerRow)
+        try {
+            val contents = csvReader.read(fileReader)
 
-        for (header in contents.header) {
-            val view = TextView(this)
-            view.text = header
-            view.setPadding(0, 0, 20, 0)
-            headerRow.addView(view)
-        }
+            val headerRow = TableRow(this)
+            headerRow.setPadding(0, 0, 0, 5)
+            table.addView(headerRow)
 
-        for (row in contents.rows) {
-            val newRow = TableRow(this)
-            newRow.setPadding(0, 0, 0, 10)
-            table.addView(newRow)
-            for (data in row.fields) {
+            for (header in contents.header) {
                 val view = TextView(this)
+                view.text = header
                 view.setPadding(0, 0, 20, 0)
-                view.text = data
-                newRow.addView(view)
+                headerRow.addView(view)
             }
+
+            for (row in contents.rows) {
+                val newRow = TableRow(this)
+                newRow.setPadding(0, 0, 0, 10)
+                table.addView(newRow)
+                for (data in row.fields) {
+                    val view = TextView(this)
+                    view.setPadding(0, 0, 20, 0)
+                    view.text = data
+                    newRow.addView(view)
+                }
+            }
+        } catch (ex: IllegalStateException) {
+            AlertDialog.Builder(this)
+                .setMessage("Failed to open this drive file. It may be empty or corrupt.")
+                .setPositiveButton("Delete Drive") { dialog: DialogInterface, _: Int ->
+                    dialog.dismiss()
+                    deleteFile()
+                    finish()
+                }
+                .setNegativeButton("Return") { dialog: DialogInterface, _: Int ->
+                    dialog.dismiss()
+                    finish()
+                }.create().show()
         }
     }
 
@@ -97,8 +115,12 @@ class DriveViewerActivity : AppCompatActivity() {
     }
 
     fun onDeleteButtonClicked(view: View) {
-        File(filesDir, filename).delete()
+        deleteFile()
         finish()
+    }
+
+    fun deleteFile() {
+        File(filesDir, filename).delete()
     }
 
     private fun doUpload(url: String) {

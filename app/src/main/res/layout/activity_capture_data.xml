@@ -8,50 +8,53 @@
         tools:context=".activities.CaptureDataActivity">
 
     <TextView
-            android:text="Status:"
+            android:text="Drive in Progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/statusTextLabel" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="106dp" app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="64dp"/>
-    <TextView
-            android:text="Running"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/statusText" android:layout_marginStart="59dp"
-            app:layout_constraintStart_toEndOf="@+id/statusTextLabel" app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="57dp"/>
+            android:id="@+id/captureDataHeader" android:textSize="24sp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="parent" android:layout_marginStart="8dp"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"/>
     <TextView
             android:text="Data Captured:"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/dataCapturedTextLabel" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="106dp" android:layout_marginTop="91dp"
-            app:layout_constraintTop_toBottomOf="@+id/statusTextLabel"/>
+            android:layout_marginTop="24dp" app:layout_constraintTop_toBottomOf="@+id/captureDataHeader"
+            android:layout_marginStart="24dp"
+    />
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/dataCapturedText" android:text="0 bytes" android:layout_marginStart="20dp"
-            app:layout_constraintStart_toEndOf="@+id/dataCapturedTextLabel" android:layout_marginTop="97dp"
-            app:layout_constraintTop_toBottomOf="@+id/statusText"/>
+            android:id="@+id/dataCapturedText" android:text="0 bytes"
+            app:layout_constraintTop_toTopOf="@+id/dataCapturedTextLabel"
+            android:layout_marginStart="8dp" app:layout_constraintStart_toEndOf="@+id/dataCapturedTextLabel"/>
     <Button
             android:text="Stop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/button5" android:onClick="onStopButtonClick"
-            android:layout_marginTop="164dp" app:layout_constraintTop_toBottomOf="@+id/dataCapturedTextLabel"
-            app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="120dp"/>
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/currentRPM"
-            app:layout_constraintStart_toEndOf="@+id/currentRPMLabel" android:layout_marginStart="8dp"
-            app:layout_constraintTop_toTopOf="@+id/currentRPMLabel"/>
-    <TextView
-            android:text="Current RPM:"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/currentRPMLabel" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="70dp" android:layout_marginTop="27dp"
-            app:layout_constraintTop_toBottomOf="@+id/button5"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="32dp"
+            app:layout_constraintEnd_toEndOf="parent"/>
+    <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/button5" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/dataCapturedText" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp" android:layout_marginStart="8dp">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:orientation="vertical">
+            <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/table" android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toTopOf="@+id/button5" app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/dataCapturedTextLabel" android:layout_marginTop="8dp"/>
+        </LinearLayout>
+    </ScrollView>
 </android.support.constraint.ConstraintLayout>
