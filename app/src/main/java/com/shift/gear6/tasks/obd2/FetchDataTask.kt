@@ -76,6 +76,9 @@ class FetchDataTask : AsyncTask<FetchDataTask.Params, Unit, FetchDataTask.Result
 
         if (executeCommands(commandList, params[0].adapter!!)) {
             result.data = buildSnapshot(commandList)
+        } else {
+            result.error = mError.orEmpty()
+            result.success = false
         }
 
         return result
@@ -109,7 +112,7 @@ class FetchDataTask : AsyncTask<FetchDataTask.Params, Unit, FetchDataTask.Result
         try {
             commands.run(adapter.getInputStream(), adapter.getOutputStream())
 
-        } catch (ex: Exception) {
+        } catch (ex: Throwable) {
             mError = ex.message
             return false
         }
