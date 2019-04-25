@@ -71,6 +71,7 @@ class DriveViewerActivity : AppCompatActivity() {
             }
         } catch (ex: IllegalStateException) {
             AlertDialog.Builder(this)
+                .setCancelable(false)
                 .setMessage("Failed to open this drive file. It may be empty or corrupt.")
                 .setPositiveButton("Delete Drive") { dialog: DialogInterface, _: Int ->
                     dialog.dismiss()

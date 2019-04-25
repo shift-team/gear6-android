@@ -165,6 +165,7 @@ class CaptureDataActivity : AppCompatActivity() {
     private fun showErrorDialog(error: String) {
         AlertDialog.Builder(this)
             .setMessage(error)
+            .setCancelable(false)
             .setPositiveButton("Go back") { dialogInterface: DialogInterface, i: Int ->
                 File(filesDir, filename).delete()
                 dialogInterface.dismiss()
