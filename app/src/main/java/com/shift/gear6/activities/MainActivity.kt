@@ -2,21 +2,20 @@ package com.shift.gear6.activities
 
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.ColorFilter
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
 import com.shift.gear6.R
+import com.shift.gear6.tasks.ui.FadeInTask
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
     private class ImageTouchListener : View.OnTouchListener {
-        private val colorString = "#80FFFFFF" // Half transparent white
+        private val colorString = "#20FFFFFF" // slightly opaque white
 
         override fun onTouch(view: View?, event: MotionEvent?): Boolean {
             if (view is ImageView) {
@@ -54,21 +53,44 @@ class MainActivity : AppCompatActivity() {
     fun onNewDriveClick(view: View) {
         val intent = Intent(this, SelectDataToFetchActivity::class.java)
 
-        startActivity(intent)
+        animateButtonAndStartActivity(imageNewDrive, intent)
     }
 
     fun onPreviousDrivesClick(view: View) {
         val intent = Intent(this, PreviousDriveSelectionActivity::class.java)
 
-        startActivity(intent)
+        animateButtonAndStartActivity(imagePreviousDrives, intent)
     }
 
     fun onSettingsClick(view: View) {
         val intent = Intent(this, SettingsActivity::class.java)
 
-        startActivity(intent)
+        animateButtonAndStartActivity(imageSettings, intent)
     }
 
-    fun onButtonTouch(view: View, event: MotionEvent) {
+    private fun animateButtonAndStartActivity(imageView: ImageView, intent: Intent) {
+        var task = FadeInTask()
+        val params = FadeInTask.Params()
+        params.imageView = imageView
+        params.opacity = 0
+        params.callback = {
+            if (params.opacity > 200) {
+                startActivity(intent)
+            } else {
+                task = FadeInTask()
+                params.opacity += 10
+                task.execute(params)
+            }
+        }
+
+        task.execute(params)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        imageNewDrive.clearColorFilter()
+        imageSettings.clearColorFilter()
+        imagePreviousDrives.clearColorFilter()
     }
 }
