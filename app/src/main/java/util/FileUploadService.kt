@@ -13,6 +13,6 @@ interface FileUploadService {
     @Multipart
     @POST("upload")
     fun upload(
-        @Part driveLog: MultipartBody.Part
+        @Part name: MultipartBody.Part
     ): Call<ResponseBody>
 }

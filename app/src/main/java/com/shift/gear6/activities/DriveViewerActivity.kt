@@ -86,33 +86,7 @@ class DriveViewerActivity : AppCompatActivity() {
     }
 
     fun onUploadButtonClicked(view: View) {
-        val protocol = "http"
-        val hostname = "192.168.0.2"
-        val port = 3000
-        val uploadPath = "obd2data"
-        val timeout = 5000 // five seconds
-
-        val url =
-            protocol + "://" +
-                    hostname + ":" +
-                    port.toString()
-        doUpload(url)
-        return
-
-        /*val uploadTask = UploadDataTask()
-        val params = UploadDataTask.Params()
-        params.filename = File(filesDir,filename).absolutePath
-
-        params.callback = {
-            if (it.success) {
-                Global.logMessage("Uploaded " + params.filename + " successfully")
-            } else {
-                Global.logMessage(it.error)
-            }
-        }
-
-        uploadTask.execute(params)*/
-
+        doUpload()
     }
 
     fun onDeleteButtonClicked(view: View) {
@@ -120,11 +94,11 @@ class DriveViewerActivity : AppCompatActivity() {
         finish()
     }
 
-    fun deleteFile() {
+    private fun deleteFile() {
         File(getExternalFilesDir(null), filename).delete()
     }
 
-    private fun doUpload(url: String) {
+    private fun doUpload() {
         val service = ServiceGenerator.createService(FileUploadService::class.java)
 
         val file = File(getExternalFilesDir(null), filename)
