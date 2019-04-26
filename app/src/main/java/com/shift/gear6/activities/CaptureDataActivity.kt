@@ -56,7 +56,7 @@ class CaptureDataActivity : AppCompatActivity() {
 
         filename = dateFormat.format(Date()) + ".csv"
 
-        file = File(filesDir, filename)
+        file = File(getExternalFilesDir(null), filename)
         fileWriter = FileWriter(file)
         csvWriter = CsvWriter()
         csvAppender = csvWriter.append(fileWriter)
@@ -231,6 +231,12 @@ class CaptureDataActivity : AppCompatActivity() {
         intent.putExtra("filename", filename)
 
         startActivity(intent)
+
+        finish()
+    }
+
+    override fun onPause() {
+        super.onPause()
 
         finish()
     }

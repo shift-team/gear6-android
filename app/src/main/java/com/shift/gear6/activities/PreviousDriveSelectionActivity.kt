@@ -26,7 +26,7 @@ class PreviousDriveSelectionActivity : AppCompatActivity() {
     }
 
     private fun populateTable() {
-        for (file in filesDir.listFiles()) {
+        for (file in getExternalFilesDir(null).listFiles()) {
             if (file.name.indexOf(".csv") != -1) {
                 val row = TableRow(this)
                 row.setPadding(0, 0, 0, 40)

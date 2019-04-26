@@ -37,7 +37,7 @@ class DriveViewerActivity : AppCompatActivity() {
     }
 
     private fun populateTable(filename: String) {
-        val file = File(filesDir, filename)
+        val file = File(getExternalFilesDir(null), filename)
         val fileReader = FileReader(file)
 
         val csvReader = CsvReader()
