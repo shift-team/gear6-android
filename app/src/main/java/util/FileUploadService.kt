@@ -11,9 +11,8 @@ import retrofit2.http.Part
 // Taken from https://futurestud.io/tutorials/retrofit-2-how-to-upload-files-to-server
 interface FileUploadService {
     @Multipart
-    @POST("obd2data")
+    @POST("upload")
     fun upload(
-        @Part("description") description: RequestBody,
-        @Part file: MultipartBody.Part
+        @Part driveLog: MultipartBody.Part
     ): Call<ResponseBody>
 }

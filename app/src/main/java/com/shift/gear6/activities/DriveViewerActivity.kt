@@ -121,31 +121,26 @@ class DriveViewerActivity : AppCompatActivity() {
     }
 
     fun deleteFile() {
-        File(filesDir, filename).delete()
+        File(getExternalFilesDir(null), filename).delete()
     }
 
     private fun doUpload(url: String) {
         val service = ServiceGenerator.createService(FileUploadService::class.java)
 
-        val file = File(filesDir, filename)
+        val file = File(getExternalFilesDir(null), filename)
 
         val requestBody = RequestBody.create(MediaType.parse("text/csv"), file)
 
         // MultipartBody.Part is used to send also the actual file name
-        val body = MultipartBody.Part.createFormData("file", file.name, requestBody)
+        val body = MultipartBody.Part.createFormData("driveLog", file.name, requestBody)
 
-        // add another part within the multipart request
-        val nameString = "driveLog"
-        val name = RequestBody.create(
-            okhttp3.MultipartBody.FORM, nameString
-        )
-
-        val call = service.upload(name, body)
+        val call = service.upload(body)
         call.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
+                //TODO: Add url from response with ability to visit page
                 Log.v("Upload", "success")
             }
 

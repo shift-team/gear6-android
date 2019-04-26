@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 // Taken from https://futurestud.io/tutorials/retrofit-2-creating-a-sustainable-android-client
 object ServiceGenerator {
 
-    private val BASE_URL = "http://192.168.0.2:3000"
+    private val BASE_URL = "https://gear6.io"
 
     private val builder = Retrofit.Builder()
         .baseUrl(BASE_URL)
