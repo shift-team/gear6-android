@@ -16,10 +16,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     private class ImageTouchListener : View.OnTouchListener {
+        private val colorString = "#80FFFFFF" // Half transparent white
+
         override fun onTouch(view: View?, event: MotionEvent?): Boolean {
             if (view is ImageView) {
                 if (event?.action == MotionEvent.ACTION_DOWN) {
-                    (view as ImageView).setColorFilter(Color.GREEN, PorterDuff.Mode.OVERLAY)
+                    (view as ImageView).setColorFilter(Color.parseColor(colorString), PorterDuff.Mode.OVERLAY)
                 } else if (event?.action == MotionEvent.ACTION_UP) {
                     (view as ImageView).clearColorFilter()
                 }
