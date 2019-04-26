@@ -167,7 +167,7 @@ class CaptureDataActivity : AppCompatActivity() {
             .setMessage(error)
             .setCancelable(false)
             .setPositiveButton("Go back") { dialogInterface: DialogInterface, i: Int ->
-                File(filesDir, filename).delete()
+                File(getExternalFilesDir(null), filename).delete()
                 dialogInterface.dismiss()
                 finish()
             }.create().show()
